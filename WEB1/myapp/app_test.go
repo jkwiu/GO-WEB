@@ -1,9 +1,11 @@
 package myapp
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -62,4 +64,36 @@ func TestBarPathHandler_WithName(t *testing.T) {
 	// }
 	data, _ := ioutil.ReadAll(res.Body) // buffer를 사용해 body를 읽어온다.
 	assert.Equal("Hello jk!", string(data))
+}
+
+func TestFooHandler_WithoutJson(t *testing.T) {
+	assert := assert.New(t)
+
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "/foo", nil)
+
+	mux := NewHttpHandler()
+	mux.ServeHTTP(res, req)
+
+	assert.Equal(http.StatusBadRequest, res.Code)
+}
+
+func TestFooHandler_WithJson(t *testing.T) {
+	assert := assert.New(t)
+
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest("POST", "/foo",
+		strings.NewReader(`{"first_name":"jk", "last_name":"choi", "email":"sizzflyer@gmail.com"}`))
+
+	mux := NewHttpHandler()
+	mux.ServeHTTP(res, req)
+
+	assert.Equal(http.StatusCreated, res.Code)
+
+	// decode
+	user := new(User)
+	err := json.NewDecoder(res.Body).Decode(user)
+	assert.Nil(err)
+	assert.Equal("jk", user.FirstName)
+	assert.Equal("choi", user.LastName)
 }

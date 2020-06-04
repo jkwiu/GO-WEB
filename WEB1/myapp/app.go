@@ -21,6 +21,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 type fooHandler struct {
 }
 
+// interface로 ServeHTTP()가 있음.
 func (f *fooHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	user := new(User)
 	err := json.NewDecoder(r.Body).Decode(user)
@@ -30,9 +31,9 @@ func (f *fooHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user.CreatedAt = time.Now()
-	w.Header().Add("content-type", "application/json") // header에 content type을 json으로 명시
 	data, _ := json.Marshal(user)
-	w.WriteHeader(http.StatusOK)
+	w.Header().Add("content-type", "application/json") // header에 content type을 json으로 명시
+	w.WriteHeader(http.StatusCreated)
 	fmt.Fprint(w, string(data))
 }
 
@@ -50,6 +51,7 @@ func NewHttpHandler() http.Handler {
 
 	mux.HandleFunc("/bar", barHandler)
 
+	// json으로 받아서 json으로 변환해주는 코드
 	mux.Handle("/foo", &fooHandler{})
 	return mux
 }
