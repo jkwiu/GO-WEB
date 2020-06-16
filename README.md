@@ -33,3 +33,17 @@
          3. 신뢰할 수 있는 프로토콜(Reliable Protocol)
          4. TCP provides reliable, ordered, error-checked delivery of a stream of octets(bytes) between applications running on hosts communicating via an IP network.
 4. File Upload
+   1. 가장 고전적인 파일 서버(코드 참조)
+      1. handle
+         1. 자원에 대한 참조
+         2. 파일 서술자(file descriptor / file handle), 네트워크 소켓, PID(프로세스 식별자) 등
+      2. context
+         1. 작업이 중단되고 나중에 같은 지점에서 계속 될 수 있수 있도록 저장해야하는 작업(프로세스, 스레드 등)에서 사용하는 최소한의 데이터 셋, 그러므로 os.Create()를 통해 파일을 생성하기 위해 file handle을 열어줬다면 다시 닫아줘야 interruped가 생기지 않는다. context data는 register에 있다.
+      3. register
+         1. 컴퓨터에 존재하는 다목적 저장 공간이며 CPU내부에 존재하기 때문에 고속으로 데이터를 처리할 수 있다.
+      4. RAM(Random Access Memory)
+         1. 데이터가 저장되어 있는 물리적인 저장소
+      5. MIME(Multipurpose Internet Mail Extensions)
+         1. 파일변환(https://server-talk.tistory.com/183)
+      6. buffer
+      7. escape
